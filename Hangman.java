@@ -95,25 +95,6 @@ public class Hangman extends ConsoleProgram {
     		int guessIndex = secretWord.indexOf(guess, i);
     		
     		
-//    		println("SecetWord: " + secretWord + "\n");
-//    		println("i testing " + i + " letter" + secretWord.substring(0, i));
-//    		
-//    		// printing testing letter
-//    		println("letter is: " + secretWord.charAt(i) 
-//    				+ " L shoud be" + (secretWord.substring(i, i) + "\n"));
-//    		// guess
-//    		println("guess is: " + guess.toUpperCase().charAt(0) + " G should be "
-//    				+ (guess) + " guess \n");
-//    		
-//    		// print result of if statement
-//    		println(secretWord.substring(i, i).equals(guess.charAt(0)));
-//    		
-//    		if (secretWord.substring(i, i).equals(guess.substring(0))) {
-//    			String temp = knownWord.substring(0, (i - 1)) + "guess"
-//    					+ knownWord.substring(i + 1);
-//    			knownWord = temp;
-//    			println("replaced string " + knownWord);
-//    		}
     	}
     }
     

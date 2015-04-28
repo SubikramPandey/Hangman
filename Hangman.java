@@ -85,19 +85,54 @@ public class Hangman extends ConsoleProgram {
     
     /*
      * goes though each letter of the secretWord
-     * checks if it matches the guess
-     * if it does replaces dash in that location with the letter in knownWord
+     * 
      */
     private void updateKnownWord(String guess) {
     	// go though all the letters in the secret word
-    	for (int i = 0; i < secretWord.length(); i++) {
-    		// gives letter index
-    		int guessIndex = secretWord.indexOf(guess, i);
+    	println("\n the word is " + secretWord);
+    	int i = 0;
+    	// go though word while letter still in what is left of word 
+    	while(i < secretWord.length() & secretWord.indexOf(guess, i) != -1) {	
+    		int letterLocation = getLetterLocation();
+    		replaceLetterInKnownWord();
     		
+    		
+    		
+    		
+    		// gives letter index
+    		println("i in update loop " + i);
+    		int guessIndex = secretWord.indexOf(guess, i);	
+    		// issue: once past the letter needs to stop 
+    		i = replaceChar(guessIndex, guess);
+    		i += 1;
     		
     	}
     }
     
+    
+    
+    
+    
+//    Checks if it matches the guess
+//    if it does replaces dash in that location with the letter in knownWord
+    /*
+     * 
+     */
+    private int replaceChar(int guessIndex, String guess) {
+    	int z;
+    	if (guessIndex < 1) {
+    		z = 0;
+    	}
+    	else {
+    		z = guessIndex -1;
+    	}
+    	println("z in replace " + z);
+    	String start = knownWord.substring(0, z);
+    	String end = knownWord.substring(z + 1);
+    	knownWord = start + guess + end;
+    	println("knownWord is "+ knownWord);
+    	return(z + 1);
+    }
     
     private void wrongGuess(String guess) {
     	guessesLeft -= 1;
@@ -112,6 +147,6 @@ public class Hangman extends ConsoleProgram {
     String wrongGuesses = "";
     int guessesLeft;
     HangmanLexicon lex = new HangmanLexicon();
-    RandomGenerator rgen = new RandomGenerator();
+    RandomGenerator rgen = new RandomGenerator();	
 
 }

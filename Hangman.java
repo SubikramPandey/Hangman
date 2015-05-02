@@ -59,7 +59,7 @@ public class Hangman extends ConsoleProgram {
     private void playGame() {
     	println("Welcome to a round of Hangman");
     	while(guessesLeft > 0) {
-    		String guess = readLine( 
+    		guess = readLine( 
     				"The word now looks like this: " + knownWord 
     				+ "\n Please guess a letter here -> ").toUpperCase();    		
     		/*
@@ -68,16 +68,16 @@ public class Hangman extends ConsoleProgram {
     		 */
     		// if guess is in the secret word
     		if (secretWord.contains(guess)) {
-    			correctGuess(guess);
+    			correctGuess();
     		}
     		else {
-    			wrongGuess(guess);
+    			wrongGuess();
     		}
     	}
     }
     
-    private void correctGuess(String guess) {
-    	updateKnownWord(guess);
+    private void correctGuess() {
+    	updateKnownWord();
 		println("Awesome " + guess + " is in the word");
 		println("Here is what the word looks like now: " + knownWord);
     }
@@ -87,60 +87,69 @@ public class Hangman extends ConsoleProgram {
      * goes though each letter of the secretWord
      * 
      */
-    private void updateKnownWord(String guess) {
-    	// go though all the letters in the secret word
-    	println("\n the word is " + secretWord);
-    	int i = 0;
-    	// go though word while letter still in what is left of word 
-    	while(i < secretWord.length() & secretWord.indexOf(guess, i) != -1) {	
-    		int letterLocation = getLetterLocation();
-    		replaceLetterInKnownWord();
-    		
-    		
-    		
-    		
-    		// gives letter index
-    		println("i in update loop " + i);
-    		int guessIndex = secretWord.indexOf(guess, i);	
-    		// issue: once past the letter needs to stop 
-    		i = replaceChar(guessIndex, guess);
-    		i += 1;
-    		
-    	}
+    private void updateKnownWord() {
+    	println("\n the word is " + secretWord);    	
+    	// go from last letter to end looking for next letter
+    	// call replace if found one
+    	// end when at last letter
+    	
+		int letterLocation = 1;
+		// char replacement if it is first letter in the word
+		replaceFirstLetterInKnownWord();
+		while (letterLocation < (knownWord.length() - 1)) {
+			replaceLetterInKnownWord(letterLocation);
+			letterLocation = getNextLetterLocation(letterLocation);
+		}
+		println("out of update loop");
+    }
+    
+    private void replaceFirstLetterInKnownWord() {
+    	if (getNextLetterLocation(0) == 1){
+			replaceLetterInKnownWord(0);
+		}
     }
     
     
-    
-    
-    
-//    Checks if it matches the guess
-//    if it does replaces dash in that location with the letter in knownWord
-    /*
-     * 
-     */
-    private int replaceChar(int guessIndex, String guess) {
-    	int z;
-    	if (guessIndex < 1) {
-    		z = 0;
+    // starting with lastLetterLocation + 1, searches for letter
+    private int getNextLetterLocation(int lastLetterLocation) {
+    	int currentLetterLocation = 
+    			secretWord.indexOf(guess, lastLetterLocation);
+    	// Signaling when the search has reached the end of the word
+    	if(currentLetterLocation == -1) {
+    		return (currentLetterLocation = knownWord.length());
     	}
     	else {
-    		z = guessIndex -1;
+    		return(currentLetterLocation + 1);
     	}
-    	println("z in replace " + z);
-    	String start = knownWord.substring(0, z);
-    	String end = knownWord.substring(z + 1);
-    	knownWord = start + guess + end;
-    	println("knownWord is "+ knownWord);
-    	return(z + 1);
     }
     
-    private void wrongGuess(String guess) {
+    // why would letter location be 0 on first run
+    private void replaceLetterInKnownWord(int letterLocation) {
+    	String start;
+    	if (letterLocation == 0) {
+    		start = "";
+    	}
+    	else {
+    		start = knownWord.substring(0, letterLocation -1);
+    	}
+    	String end = knownWord.substring(letterLocation);
+    	println("start: " + start + " guess: " + guess + " end: " + end );
+    	knownWord = start + guess + end;
+    	
+    	println("knownWord in replace: " + knownWord);
+    	println("letterLocation: " + letterLocation);
+    	println("end of replace \n");
+    	
+    }
+    
+    private void wrongGuess() {
     	guessesLeft -= 1;
     	println(guess + " is not in the secret word"
     			+ "\n You have " + guessesLeft + " guesses left!");
     }
     
     /** Instance Variables */
+    String guess;
     String secretWord;
     String lettersInSecretString = ""; // used to spead search, list unique char
     String knownWord = "";

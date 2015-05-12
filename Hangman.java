@@ -45,20 +45,21 @@ public class Hangman extends ConsoleProgram {
     	String secretWord = lex.getWord(wordIndex);
     	return (secretWord);
     }
-    
+     
     private void getKnownWord() {
     	for (int i = 0; i < secretWord.length(); i++) {
     		knownWord += "-";
     	}
     }
-    
+    // issue: non single char input
     // while there are still free guesses
     // takes user guess
     // check if its in the secret word
     // updates knownWord and wrongGuesses
     private void playGame() {
     	println("Welcome to a round of Hangman");
-    	while(guessesLeft > 0) {
+    	println("the word is: " + secretWord);
+    	while(guessesLeft > 0 ) {
     		guess = readLine( 
     				"The word now looks like this: " + knownWord 
     				+ "\n Please guess a letter here -> ").toUpperCase();    		
@@ -73,6 +74,23 @@ public class Hangman extends ConsoleProgram {
     		else {
     			wrongGuess();
     		}
+    		if (secretWord.equalsIgnoreCase(knownWord) == true) {
+    			break;
+    		}
+    	}
+    	endGame(guessesLeft);
+    }
+    
+    private void endGame(int guessesLeft){
+    	if(guessesLeft == 0) {
+    		println("you lost :(");
+    	}
+    	else {
+    		println("you win!");
+    	}
+    	String playAgain = readLine("do you want to play again? \n y or n");
+    	if (playAgain.equalsIgnoreCase("y")) {
+    		setupGame();
     	}
     }
     
@@ -85,62 +103,48 @@ public class Hangman extends ConsoleProgram {
     
     /*
      * goes though each letter of the secretWord
-     * 
+     * replaces dashed in knownWord with guess
+     * 		 untill reach the last copy of guess in the string
      */
     private void updateKnownWord() {
     	println("\n the word is " + secretWord);    	
     	// go from last letter to end looking for next letter
     	// call replace if found one
     	// end when at last letter
-    	
-		int letterLocation = 1;
-		// char replacement if it is first letter in the word
-		replaceFirstLetterInKnownWord();
-		while (letterLocation < (knownWord.length() - 1)) {
-			replaceLetterInKnownWord(letterLocation);
-			letterLocation = getNextLetterLocation(letterLocation);
-		}
-		println("out of update loop");
-    }
-    
-    private void replaceFirstLetterInKnownWord() {
-    	if (getNextLetterLocation(0) == 1){
-			replaceLetterInKnownWord(0);
-		}
-    }
-    
-    
-    // starting with lastLetterLocation + 1, searches for letter
-    private int getNextLetterLocation(int lastLetterLocation) {
-    	int currentLetterLocation = 
-    			secretWord.indexOf(guess, lastLetterLocation);
-    	// Signaling when the search has reached the end of the word
-    	if(currentLetterLocation == -1) {
-    		return (currentLetterLocation = knownWord.length());
-    	}
-    	else {
-    		return(currentLetterLocation + 1);
+    	int replaceLocation = 0;
+    	while(replaceLocation < secretWord.length()) {
+    		println("i = " + replaceLocation);
+    		println("current KnownWord " + knownWord);
+    		replaceLocation = secretWord.indexOf(guess, replaceLocation);
+    		// quit if guess is not in the rest of the word
+    		if (replaceLocation == -1) {break;}
+    		replaceLocation = updateKnownWord(replaceLocation);
     	}
     }
     
-    // why would letter location be 0 on first run
-    private void replaceLetterInKnownWord(int letterLocation) {
+    // ISSUE: put get start and end strings in another function
+    private int updateKnownWord(int replaceLocation) {
     	String start;
-    	if (letterLocation == 0) {
+    	String end;
+    	// handle when its the first or last char in string
+    	if (replaceLocation == 0) {
     		start = "";
+    		end = knownWord.substring(1);
     	}
-    	else {
-    		start = knownWord.substring(0, letterLocation -1);
+    	// handles when last letter
+    	else if (replaceLocation == knownWord.length()) {
+    		start = knownWord.substring(0, knownWord.length() -1);
+    		end = "";
     	}
-    	String end = knownWord.substring(letterLocation);
-    	println("start: " + start + " guess: " + guess + " end: " + end );
+    	else { 
+    		start = knownWord.substring(0, replaceLocation);
+    		end = knownWord.substring(replaceLocation + 1);
+    	}
     	knownWord = start + guess + end;
-    	
-    	println("knownWord in replace: " + knownWord);
-    	println("letterLocation: " + letterLocation);
-    	println("end of replace \n");
+    	return (replaceLocation += 1);
     	
     }
+
     
     private void wrongGuess() {
     	guessesLeft -= 1;

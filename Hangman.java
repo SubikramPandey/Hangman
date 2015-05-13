@@ -29,7 +29,7 @@ public class Hangman extends ConsoleProgram {
     	setupGame();
     	playGame();
 	}
-    
+    // issue: reset gcanvas so restarts game properly
     private void setupGame() {
     	setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
     	secretWord = getSecretWord();
@@ -51,7 +51,7 @@ public class Hangman extends ConsoleProgram {
     		knownWord += "-";
     	}
     }
-    // issue: non single char input
+
     // while there are still free guesses
     // takes user guess
     // check if its in the secret word
@@ -60,9 +60,7 @@ public class Hangman extends ConsoleProgram {
     	println("Welcome to a round of Hangman");
     	println("the word is: " + secretWord);
     	while(guessesLeft > 0 ) {
-    		guess = readLine( 
-    				"The word now looks like this: " + knownWord 
-    				+ "\n Please guess a letter here -> ").toUpperCase();    		
+    		guess = getGuess();    		
     		/*
     		 * can change and change bool if there is a change
     		 * return false otherwise
@@ -88,10 +86,32 @@ public class Hangman extends ConsoleProgram {
     	else {
     		println("you win!");
     	}
-    	String playAgain = readLine("do you want to play again? \n y or n");
-    	if (playAgain.equalsIgnoreCase("y")) {
+    	askForRematch();
+    }
+
+	private void askForRematch() {
+		String playAgain = readLine("do you want to play again? \n yes or no");
+    	if (playAgain.startsWith("yes")) {
     		setupGame();
     	}
+    	else if(playAgain.startsWith("no")) {
+    		println("ok end of game");
+    	}
+    	else{
+			println("sorry responce need to be either yes or no");
+			askForRematch();
+		}
+    }
+    
+    private String getGuess() {
+    	guess = readLine( 
+				"The word now looks like this: " + knownWord 
+				+ "\n Please guess a letter here -> ").toUpperCase();
+    	if (guess.length() != 1){
+    		println("  That was not a valid guess try again");
+    		getGuess();
+    	}
+    	return (guess);
     }
     
     private void correctGuess() {
@@ -122,7 +142,6 @@ public class Hangman extends ConsoleProgram {
     	}
     }
     
-    // ISSUE: put get start and end strings in another function
     private int updateKnownWord(int replaceLocation) {
     	String start;
     	String end;
@@ -141,8 +160,7 @@ public class Hangman extends ConsoleProgram {
     		end = knownWord.substring(replaceLocation + 1);
     	}
     	knownWord = start + guess + end;
-    	return (replaceLocation += 1);
-    	
+    	return (replaceLocation += 1);	
     }
 
     

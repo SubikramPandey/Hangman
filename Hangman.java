@@ -29,7 +29,7 @@ public class Hangman extends ConsoleProgram {
     	setupGame();
     	playGame();
 	}
-    // issue: reset gcanvas so restarts game properly
+
     private void setupGame() {
     	setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
     	secretWord = getSecretWord();
@@ -41,12 +41,18 @@ public class Hangman extends ConsoleProgram {
     // currently gets random word from the HangmanLexicon class
     private String getSecretWord() {
     	// get random word, assign it to variable, return that
+    	
+
+        //String wrongGuesses = "";
+    	
+    	
     	int wordIndex = rgen.nextInt(lex.getWordCount());
     	String secretWord = lex.getWord(wordIndex);
     	return (secretWord);
     }
      
     private void getKnownWord() {
+        knownWord = "";
     	for (int i = 0; i < secretWord.length(); i++) {
     		knownWord += "-";
     	}
@@ -61,11 +67,6 @@ public class Hangman extends ConsoleProgram {
     	println("the word is: " + secretWord);
     	while(guessesLeft > 0 ) {
     		guess = getGuess();    		
-    		/*
-    		 * can change and change bool if there is a change
-    		 * return false otherwise
-    		 */
-    		// if guess is in the secret word
     		if (secretWord.contains(guess)) {
     			correctGuess();
     		}
@@ -79,33 +80,37 @@ public class Hangman extends ConsoleProgram {
     	endGame(guessesLeft);
     }
     
+    
+    
+    
     private void endGame(int guessesLeft){
     	if(guessesLeft == 0) {
     		println("you lost :(");
     	}
     	else {
-    		println("you win!");
+    		println("\n You win! \n");
     	}
     	askForRematch();
     }
 
 	private void askForRematch() {
-		String playAgain = readLine("do you want to play again? \n yes or no");
+		String playAgain = readLine(
+				"do you want to play again? \n yes or no: ");
     	if (playAgain.startsWith("yes")) {
-    		setupGame();
+    		run();
     	}
     	else if(playAgain.startsWith("no")) {
-    		println("ok end of game");
+    		println("Okay thanks for playing");
     	}
     	else{
-			println("sorry responce need to be either yes or no");
+			println("\n sorry responce needs to be either yes or no");
 			askForRematch();
 		}
     }
     
     private String getGuess() {
     	guess = readLine( 
-				"The word now looks like this: " + knownWord 
+				"\n The word now looks like this: " + knownWord 
 				+ "\n Please guess a letter here -> ").toUpperCase();
     	if (guess.length() != 1){
     		println("  That was not a valid guess try again");
@@ -117,7 +122,6 @@ public class Hangman extends ConsoleProgram {
     private void correctGuess() {
     	updateKnownWord();
 		println("Awesome " + guess + " is in the word");
-		println("Here is what the word looks like now: " + knownWord);
     }
     
     
@@ -127,14 +131,13 @@ public class Hangman extends ConsoleProgram {
      * 		 untill reach the last copy of guess in the string
      */
     private void updateKnownWord() {
-    	println("\n the word is " + secretWord);    	
+    	//println("\n the word is " + secretWord);    // debug 	
     	// go from last letter to end looking for next letter
     	// call replace if found one
     	// end when at last letter
     	int replaceLocation = 0;
     	while(replaceLocation < secretWord.length()) {
-    		println("i = " + replaceLocation);
-    		println("current KnownWord " + knownWord);
+    		//println("current KnownWord " + knownWord); debug
     		replaceLocation = secretWord.indexOf(guess, replaceLocation);
     		// quit if guess is not in the rest of the word
     		if (replaceLocation == -1) {break;}
@@ -173,10 +176,9 @@ public class Hangman extends ConsoleProgram {
     /** Instance Variables */
     String guess;
     String secretWord;
-    String lettersInSecretString = ""; // used to spead search, list unique char
-    String knownWord = "";
-    String wrongGuesses = "";
     int guessesLeft;
+    String knownWord;
+    String wrongGuesses = "";
     HangmanLexicon lex = new HangmanLexicon();
     RandomGenerator rgen = new RandomGenerator();	
 

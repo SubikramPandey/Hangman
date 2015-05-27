@@ -180,6 +180,7 @@ public class Hangman extends ConsoleProgram {
     String knownWord;
     String wrongGuesses = "";
     HangmanLexicon lex = new HangmanLexicon();
-    RandomGenerator rgen = new RandomGenerator();	
+    RandomGenerator rgen = new RandomGenerator();
+    private HangmanCanvas canvas;
 
 }

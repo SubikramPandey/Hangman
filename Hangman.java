@@ -19,10 +19,14 @@ public class Hangman extends ConsoleProgram {
 
 	
 	/** Width and height of application window in pixels */
-	public static final int APPLICATION_WIDTH = 400;
+	public static final int APPLICATION_WIDTH = 600;
 	public static final int APPLICATION_HEIGHT = 600;
 	
-	
+	public void init() {
+        canvas = new HangmanCanvas();
+        add(canvas);
+    }
+
 	
 	// setup then starts a game
     public void run() {
@@ -32,6 +36,7 @@ public class Hangman extends ConsoleProgram {
 
     private void setupGame() {
     	setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+    	canvas.reset();
     	secretWord = getSecretWord();
     	getKnownWord();
     	guessesLeft = 8;
@@ -39,13 +44,7 @@ public class Hangman extends ConsoleProgram {
     }
     
     // currently gets random word from the HangmanLexicon class
-    private String getSecretWord() {
-    	// get random word, assign it to variable, return that
-    	
-
-        //String wrongGuesses = "";
-    	
-    	
+    private String getSecretWord() {  	
     	int wordIndex = rgen.nextInt(lex.getWordCount());
     	String secretWord = lex.getWord(wordIndex);
     	return (secretWord);
@@ -61,14 +60,18 @@ public class Hangman extends ConsoleProgram {
     // while there are still free guesses
     // takes user guess
     // check if its in the secret word
-    // updates knownWord and wrongGuesses
+    // updates knownWord 
     private void playGame() {
     	println("Welcome to a round of Hangman");
     	println("the word is: " + secretWord);
+    	canvas.displayWord(knownWord);
     	while(guessesLeft > 0 ) {
     		guess = getGuess();    		
-    		if (secretWord.contains(guess)) {
+    		if (secretWord.indexOf(guess) != -1) {
     			correctGuess();
+    		}
+    		else if(incorrectGuesses.indexOf(guess) != -1) {
+    			println("you alredy guessed that and it is not in the word");
     		}
     		else {
     			wrongGuess();
@@ -81,21 +84,23 @@ public class Hangman extends ConsoleProgram {
     }
     
     
-    
+    // fix so not double checking for game lost
+    // then display full word to show user if won or lost
     
     private void endGame(int guessesLeft){
     	if(guessesLeft == 0) {
-    		println("you lost :(");
+    		println("\n you lost :( \n the word was: " + secretWord);
     	}
     	else {
-    		println("\n You win! \n");
+    		println("\n You figured it out! \n the word was: "
+    				+ secretWord + "\n You won!");
     	}
     	askForRematch();
     }
 
 	private void askForRematch() {
 		String playAgain = readLine(
-				"do you want to play again? \n yes or no: ");
+				"\n do you want to play again? \n yes or no: ");
     	if (playAgain.startsWith("yes")) {
     		run();
     	}
@@ -108,19 +113,21 @@ public class Hangman extends ConsoleProgram {
 		}
     }
     
-    private String getGuess() {
-    	guess = readLine( 
+    private char getGuess() {
+    	String rawGuess = readLine( 
 				"\n The word now looks like this: " + knownWord 
 				+ "\n Please guess a letter here -> ").toUpperCase();
-    	if (guess.length() != 1){
+    	if (rawGuess.length() != 1){
     		println("  That was not a valid guess try again");
     		getGuess();
     	}
+    	guess = rawGuess.charAt(0);
     	return (guess);
     }
     
     private void correctGuess() {
     	updateKnownWord();
+    	canvas.displayWord(knownWord);
 		println("Awesome " + guess + " is in the word");
     }
     
@@ -169,16 +176,19 @@ public class Hangman extends ConsoleProgram {
     
     private void wrongGuess() {
     	guessesLeft -= 1;
+    	incorrectGuesses += guess;
+    	canvas.noteIncorrectGuess(guess);
+    	println(incorrectGuesses);
     	println(guess + " is not in the secret word"
     			+ "\n You have " + guessesLeft + " guesses left!");
     }
     
     /** Instance Variables */
-    String guess;
+    char guess;
     String secretWord;
     int guessesLeft;
     String knownWord;
-    String wrongGuesses = "";
+    String incorrectGuesses = "";
     HangmanLexicon lex = new HangmanLexicon();
     RandomGenerator rgen = new RandomGenerator();
     private HangmanCanvas canvas;

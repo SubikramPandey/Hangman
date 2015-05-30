@@ -19,7 +19,7 @@ public class Hangman extends ConsoleProgram {
 
 	
 	/** Width and height of application window in pixels */
-	public static final int APPLICATION_WIDTH = 600;
+	public static final int APPLICATION_WIDTH = 800;
 	public static final int APPLICATION_HEIGHT = 600;
 	
 	public void init() {
@@ -35,12 +35,11 @@ public class Hangman extends ConsoleProgram {
 	}
 
     private void setupGame() {
-    	setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
-    	canvas.reset();
     	secretWord = getSecretWord();
     	getKnownWord();
+    	setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+    	canvas.reset(knownWord, secretWord);
     	guessesLeft = 8;
-    	
     }
     
     // currently gets random word from the HangmanLexicon class

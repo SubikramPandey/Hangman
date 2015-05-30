@@ -4,13 +4,45 @@
  * This file keeps track of the Hangman display.
  */
 
+import java.awt.Color;
+
 import acm.graphics.*;
 
 public class HangmanCanvas extends GCanvas {
 
 /** Resets the display so that only the scaffold appears */
-	public void reset() {
+	public void reset(String knownWord, String secretWord) {
 		/* You fill this in */
+		removeAll();
+		addScaffold();
+		addKnownWord(knownWord);
+		addWrongGuesses();
+	}
+	
+	private void addKnownWord(String knownWord) {
+		knownDisplay = new GLabel(knownWord);
+		double xWord = xDrawCenter - knownDisplay.getWidth()/2;
+		double yWord = bottomScaffold + wordSpacer;
+		knownDisplay.setLocation(xWord, yWord);
+		add (knownDisplay);
+	}
+	
+	// change to wrong guess
+	private void addWrongGuesses() {
+		
+	}
+	
+	private void addScaffold() {
+		// all lines are horizontialy relative to the center of the screen
+		GLine rope = new GLine(xDrawCenter, yScaffold,
+				xDrawCenter, yScaffold + ROPE_LENGTH);
+		add(rope);
+		GLine beam = new GLine(xScaffold,
+				yScaffold, xDrawCenter, yScaffold);
+		add(beam);
+		GLine scaffold = new GLine(xScaffold, yScaffold,
+				xScaffold, bottomScaffold);
+		add(scaffold);
 	}
 
 /**
@@ -20,6 +52,8 @@ public class HangmanCanvas extends GCanvas {
  */
 	public void displayWord(String word) {
 		/* You fill this in */
+		remove(knownDisplay);
+		addKnownWord(word);
 	}
 
 /**
@@ -33,6 +67,14 @@ public class HangmanCanvas extends GCanvas {
 		
 	}
 
+	// Instance variables 		// ISSUE more logical nameing convention
+	int xDrawCenter = Hangman.APPLICATION_WIDTH / 4;
+	int yScaffold = Hangman.APPLICATION_HEIGHT / 8;
+	int xScaffold = xDrawCenter - BEAM_LENGTH;
+	int bottomScaffold = yScaffold + SCAFFOLD_HEIGHT;
+	int wordSpacer = 50;		// currently arbitrary
+	GLabel knownDisplay;
+	
 /* Constants for the simple version of the picture (in pixels) */
 	private static final int SCAFFOLD_HEIGHT = 360;
 	private static final int BEAM_LENGTH = 144;

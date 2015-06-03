@@ -69,7 +69,7 @@ public class Hangman extends ConsoleProgram {
     		if (secretWord.indexOf(guess) != -1) {
     			correctGuess();
     		}
-    		else if(incorrectGuesses.indexOf(guess) != -1) {
+    		else if(canvas.incorrectGuesses.indexOf(guess) != -1) {
     			println("you alredy guessed that and it is not in the word");
     		}
     		else {
@@ -127,7 +127,6 @@ public class Hangman extends ConsoleProgram {
     private void correctGuess() {
     	updateKnownWord();
     	canvas.displayWord(knownWord);
-		println("Awesome " + guess + " is in the word");
     }
     
     
@@ -137,13 +136,8 @@ public class Hangman extends ConsoleProgram {
      * 		 untill reach the last copy of guess in the string
      */
     private void updateKnownWord() {
-    	//println("\n the word is " + secretWord);    // debug 	
-    	// go from last letter to end looking for next letter
-    	// call replace if found one
-    	// end when at last letter
     	int replaceLocation = 0;
     	while(replaceLocation < secretWord.length()) {
-    		//println("current KnownWord " + knownWord); debug
     		replaceLocation = secretWord.indexOf(guess, replaceLocation);
     		// quit if guess is not in the rest of the word
     		if (replaceLocation == -1) {break;}
@@ -175,9 +169,8 @@ public class Hangman extends ConsoleProgram {
     
     private void wrongGuess() {
     	guessesLeft -= 1;
-    	incorrectGuesses += guess;
     	canvas.noteIncorrectGuess(guess);
-    	println(incorrectGuesses);
+    	//println("incorrectGuesses: " + canvas.incorrectGuesses);
     	println(guess + " is not in the secret word"
     			+ "\n You have " + guessesLeft + " guesses left!");
     }
@@ -187,7 +180,7 @@ public class Hangman extends ConsoleProgram {
     String secretWord;
     int guessesLeft;
     String knownWord;
-    String incorrectGuesses = "";
+    
     HangmanLexicon lex = new HangmanLexicon();
     RandomGenerator rgen = new RandomGenerator();
     private HangmanCanvas canvas;

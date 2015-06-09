@@ -17,6 +17,8 @@ public class HangmanCanvas extends GCanvas {
 		addScaffold();
 		addKnownWord(knownWord);
 		incorrectGuesses = "";
+		incorrectGuessesDisplay = new GLabel(incorrectGuesses);
+		add(incorrectGuessesDisplay);
 	}
 	
 	private void addScaffold() {
@@ -68,6 +70,7 @@ public class HangmanCanvas extends GCanvas {
 	// ISSUE remove old wrongDisplay, otherwise writing over old
 	private void updateIncorrectGuessDisplay () {
 		// get points
+		remove(incorrectGuessesDisplay);
 		incorrectGuessesDisplay = new GLabel(incorrectGuesses);
 		double xDisplay = knownDisplay.getX();
 		double yDisplay = knownDisplay.getY() + 30;
@@ -75,13 +78,16 @@ public class HangmanCanvas extends GCanvas {
 		add(incorrectGuessesDisplay);
 	}
 	
+	// refactor to call make a line function with variables for x, y
 	private void updateBody(int incorrectCount) {
 		switch(incorrectCount) {
 		case 1: addHead();
 				break;
 		case 2: addBody();
 				break;
-		case 3: addRightArm();
+		case 3: // add right arm
+				addBodyPart(screenCenter, screenCenter + UPPER_ARM_LENGTH,
+						yShoulder, yShoulder);
 				break;
 		case 4: addLeftArm();
 				break;
@@ -89,39 +95,95 @@ public class HangmanCanvas extends GCanvas {
 				break;
 		case 6: addLeftHand();
 				break;
-		case 7: addRightLeg();
+		case 7: addHips();
 				break;
-		case 8: addLeftLeg();
+		case 8: addRightLeg();
 				break;
-		case 9:	addRightFoot();
+		case 9: addLeftLeg();
 				break;
-		case 10: addLeftFoot();
+		case 10:addRightFoot();
+				break;
+		case 11:addLeftFoot();
 				break;
 		}
 	}
 	
+	private void addBodyPart(int x1, int x2, int y1, int y2) {
+		GLine line = new GLine(x1, y1, x2, y2);
+		add(line);
+	}
+	
 	private void addHead() {
-		GOval head = new GOval(screenCenter -HEAD_RADIUS /2, 
+		GOval head = new GOval(screenCenter - HEAD_RADIUS /2, 
 				yScaffold + ROPE_LENGTH,
 				HEAD_RADIUS,HEAD_RADIUS);
 		add(head);
 	}
 	
+	// ISSUE clean up speggeti code, make yScaffold + ROPE_LENGTH into a point
 	private void addBody() {
-		
+		addBodyPart(screenCenter, screenCenter, yBottomofHead, yHips);
 	}
 	
+	private void addRightArm() {
+		addBodyPart(screenCenter, screenCenter + UPPER_ARM_LENGTH,
+				yShoulder, yShoulder);
+	}
+
+	private void addLeftArm() {
+		addBodyPart(screenCenter, screenCenter - UPPER_ARM_LENGTH,
+				yShoulder, yShoulder);
+	}
+	
+	private void addRightHand() {
+		addBodyPart(screenCenter + UPPER_ARM_LENGTH, 
+			screenCenter + UPPER_ARM_LENGTH, yShoulder, 
+			yShoulder + LOWER_ARM_LENGTH);
+	}
+
+	private void addLeftHand() {
+		addBodyPart(screenCenter - UPPER_ARM_LENGTH,
+			screenCenter - UPPER_ARM_LENGTH, yShoulder, 
+			yShoulder + LOWER_ARM_LENGTH);
+	}
+	
+	private void addHips() {
+		addBodyPart(xLeftLeg, xRightLeg, yHips, yHips);
+	}
+	
+	private void addRightLeg() {
+		addBodyPart(xRightLeg,  xRightLeg, yHips, yAnkle);
+	}
+
+	private void addLeftLeg() {
+		addBodyPart(xLeftLeg, xLeftLeg, yHips, yAnkle);
+	}
+
+	private void addRightFoot() {
+		addBodyPart(xRightLeg, xRightLeg + FOOT_LENGTH, yAnkle, yAnkle);
+	}
+
+	private void addLeftFoot() {
+		addBodyPart(xLeftLeg, xLeftLeg - FOOT_LENGTH, yAnkle, yAnkle);
+	}
+
 	// Instance variables 		// ISSUE more logical nameing convention
+	GLabel knownDisplay;
+	GLabel incorrectGuessesDisplay;
 	int screenCenter = Hangman.APPLICATION_WIDTH / 4;
 	int yScaffold = Hangman.APPLICATION_HEIGHT / 8;
 	int xScaffold = screenCenter - BEAM_LENGTH;
 	int bottomScaffold = yScaffold + SCAFFOLD_HEIGHT;
 	int wordSpacer = 50;		// currently arbitrary
-	GLabel knownDisplay;
-	GLabel incorrectGuessesDisplay;
 	// Used in Hangman.java to tell if char already guessed
 	// ISSUE alternatives beside
 	String incorrectGuesses;
+	int yBottomofHead = yScaffold + ROPE_LENGTH + HEAD_RADIUS;
+	int yShoulder = yBottomofHead + ARM_OFFSET_FROM_HEAD;
+	int xLeftLeg = screenCenter - HIP_WIDTH / 2;
+	int xRightLeg = screenCenter + HIP_WIDTH / 2;
+	int yHips = yBottomofHead + BODY_LENGTH;
+	int yAnkle = yHips + LEG_LENGTH;
 	
 /* Constants for the simple version of the picture (in pixels) */
 	private static final int SCAFFOLD_HEIGHT = 360;

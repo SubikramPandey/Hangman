@@ -36,10 +36,11 @@ public class Hangman extends ConsoleProgram {
 
     private void setupGame() {
     	secretWord = getSecretWord();
-    	getKnownWord();
+    	initalizeKnownWord();
+    	println(knownWord + " knownWord "  + " secret " + secretWord);
     	setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
     	canvas.reset(knownWord, secretWord);
-    	guessesLeft = 8;
+    	guessesLeft = 11;
     }
     
     // currently gets random word from the HangmanLexicon class
@@ -49,8 +50,8 @@ public class Hangman extends ConsoleProgram {
     	return (secretWord);
     }
      
-    private void getKnownWord() {
-        knownWord = "";
+    private void initalizeKnownWord() {
+    	knownWord = "";
     	for (int i = 0; i < secretWord.length(); i++) {
     		knownWord += "-";
     	}
@@ -64,8 +65,21 @@ public class Hangman extends ConsoleProgram {
     	println("Welcome to a round of Hangman");
     	println("the word is: " + secretWord);
     	canvas.displayWord(knownWord);
+    	int testingItt = 0;
     	while(guessesLeft > 0 ) {
-    		guess = getGuess();    		
+    		if(testing) {
+    			println(testingItt);
+    			testRun(testingItt);
+    			testingItt += 1;
+    			println(secretWord);
+    		}
+    		else {
+    			println("user guess");
+    			guess = getGuess(); 
+    			println("got your guess it is: " + guess);
+    			println("got your guess it is: " + guess);
+    		}
+    		// secretWord.
     		if (secretWord.indexOf(guess) != -1) {
     			correctGuess();
     		}
@@ -78,10 +92,22 @@ public class Hangman extends ConsoleProgram {
     		if (secretWord.equalsIgnoreCase(knownWord) == true) {
     			break;
     		}
+    		println(secretWord);
     	}
     	endGame(guessesLeft);
     }
     
+    private void testRun(int testingItt) {
+    	String guesses;
+    	secretWord = "AAAAA";
+    	if (testWrongGuesses) {
+    		guesses = "qwertyuiopl";
+    	}
+    	else {
+    		guesses = "AAAAA";
+    	}
+		guess = guesses.charAt(testingItt);
+    }
     
     // fix so not double checking for game lost
     // then display full word to show user if won or lost
@@ -184,5 +210,6 @@ public class Hangman extends ConsoleProgram {
     HangmanLexicon lex = new HangmanLexicon();
     RandomGenerator rgen = new RandomGenerator();
     private HangmanCanvas canvas;
-
+    boolean testing = false;
+    boolean testWrongGuesses = false;	// are auto guesses right or wrong
 }

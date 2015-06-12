@@ -6,12 +6,50 @@
  */
 
 import acm.util.*;
+import java.io.*;
+import java.util.*;
 
 public class HangmanLexicon {
 
 /** Returns the number of words in the lexicon. */
 	public int getWordCount() {
-		return 10;
+		makeArrayList();
+		return wordList.size();
+		// return 10;
+	}
+	
+	/*
+	 * read file into arraylist
+	 * update get word count to index of arraylist
+	 */
+	
+	private BufferedReader openFile() {
+		BufferedReader rd = null;
+		while (rd == null) {
+			try {
+				rd = new BufferedReader(
+						new FileReader("HangmanLexicon.txt "));
+			}
+			catch (IOException ex) {
+				
+			}
+		}
+		return rd;
+	}
+	
+	private void makeArrayList() {
+		wordList = new ArrayList<String> ();
+		BufferedReader rd = openFile();
+		try {
+			while (true) {
+				String line = rd.readLine();
+				if(line == null) {break;}
+				wordList.add(line);
+			}
+		}
+		catch (IOException ex) {
+			throw new ErrorException(ex);
+		}
 	}
 
 /** Returns the word at the specified index. */
@@ -29,5 +67,7 @@ public class HangmanLexicon {
 			case 9: return "ZIRCON";
 			default: throw new ErrorException("getWord: Illegal index");
 		}
-	};
+	}
+	/** Class Variables */
+	ArrayList<String> wordList;
 }

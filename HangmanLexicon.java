@@ -14,8 +14,9 @@ public class HangmanLexicon {
 /** Returns the number of words in the lexicon. */
 	public int getWordCount() {
 		makeArrayList();
-		return wordList.size();
-		// return 10;
+		int count = wordList.size();
+		return (count);
+		//return 10;
 	}
 	
 	/*
@@ -28,7 +29,7 @@ public class HangmanLexicon {
 		while (rd == null) {
 			try {
 				rd = new BufferedReader(
-						new FileReader("HangmanLexicon.txt "));
+						new FileReader("HangmanLexicon.txt"));
 			}
 			catch (IOException ex) {
 				
@@ -37,7 +38,7 @@ public class HangmanLexicon {
 		return rd;
 	}
 	
-	private void makeArrayList() {
+	private ArrayList makeArrayList() {
 		wordList = new ArrayList<String> ();
 		BufferedReader rd = openFile();
 		try {
@@ -50,6 +51,7 @@ public class HangmanLexicon {
 		catch (IOException ex) {
 			throw new ErrorException(ex);
 		}
+		return(wordList);
 	}
 
 /** Returns the word at the specified index. */

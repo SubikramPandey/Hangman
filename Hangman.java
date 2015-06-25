@@ -12,7 +12,6 @@
 import acm.graphics.*;
 import acm.program.*;
 import acm.util.*;
-
 import java.awt.*;
 
 public class Hangman extends ConsoleProgram {
@@ -27,7 +26,6 @@ public class Hangman extends ConsoleProgram {
         add(canvas);
     }
 
-	
 	// setup then starts a game
     public void run() {
     	setupGame();
@@ -44,13 +42,18 @@ public class Hangman extends ConsoleProgram {
     }
     
     // currently gets random word from the HangmanLexicon class
-    private String getSecretWord() {  	
-    	int wordIndex = rgen.nextInt(lex.getWordCount());
+    private String getSecretWord() { 
+    	println("start");
+    	int count = lex.getWordCount();
+    	//int count = 10;
+    	println(count);
+    	int wordIndex = rgen.nextInt(count);
     	String secretWord = lex.getWord(wordIndex);
     	return (secretWord);
     }
      
     private void initalizeKnownWord() {
+    	println("starting word");
     	knownWord = "";
     	for (int i = 0; i < secretWord.length(); i++) {
     		knownWord += "-";
